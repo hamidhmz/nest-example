@@ -1,4 +1,8 @@
-export  class AddTaskDto {
-  taskDescription:string;
-  taskTitle:string;
+import { IsNotEmpty } from 'class-validator';
+
+export class AddTaskDto {
+  @IsNotEmpty()
+  taskDescription: string;
+  @IsNotEmpty()
+  taskTitle: string;
 }
