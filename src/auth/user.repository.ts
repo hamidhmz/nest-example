@@ -1,4 +1,4 @@
-import { ConflictException } from '@nestjs/common';
+import { ConflictException, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { EntityRepository, Repository } from 'typeorm';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
@@ -25,6 +25,8 @@ export class UserRepository extends Repository<User> {
     authCredentialsDto: AuthCredentialsDto,
   ): Promise<boolean> {
     const user = await this.findOne({ username: authCredentialsDto.username });
+    if (!user) throw new UnauthorizedException('Invalid credentials');
+
     return this.comparePassword(authCredentialsDto.password, user.password);
   }
 
@@ -33,7 +35,10 @@ export class UserRepository extends Repository<User> {
     hashedPassword: string,
   ): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      bcrypt.compare(password, hashedPassword, function(err, isMatch) {
+      bcrypt.compare(password, hashedPassword, function(
+        err: Error,
+        isMatch: boolean,
+      ) {
         if (err) reject(err);
         resolve(isMatch);
       });
