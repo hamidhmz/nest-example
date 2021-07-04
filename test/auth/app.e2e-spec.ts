@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { AppModule } from './../src/app.module';
+import { AppModule } from '../../src/app.module';
 import * as faker from 'faker';
-import { UserRepository } from 'src/auth/user.repository';
+import { UserRepository } from '../../src/auth/user.repository';
 import { getConnection } from 'typeorm';
 
 let userRepository: UserRepository;
@@ -30,6 +30,12 @@ describe('/auth/sign-up (e2e)', () => {
   });
 
   afterAll(async () => {
+    await getConnection()
+      .createQueryBuilder()
+      .delete()
+      .from('user')
+      .where({})
+      .execute();
     app.close();
   });
 
@@ -43,6 +49,7 @@ describe('/auth/sign-up (e2e)', () => {
       .send(reqBody);
 
     const userFromDB = await userRepository.findOne({ id: result.body.id });
+    
     expect(userFromDB).toEqual({
       id: result.body.id,
       username: reqBody.username,

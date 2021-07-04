@@ -5,9 +5,14 @@ import { TasksModule } from './tasks/tasks.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { validate } from './config/env.validation';
+import { GraphQLModule } from '@nestjs/graphql';
+import { LessonModule } from './lesson/lesson.module';
 
 @Module({
   imports: [
+    GraphQLModule.forRoot({
+      autoSchemaFile: true,
+    }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: typeOrmConfig,
@@ -19,6 +24,7 @@ import { validate } from './config/env.validation';
       envFilePath: process.env.NODE_ENV === 'test' ? 'test/test.env' : '.env',
       validate,
     }),
+    LessonModule,
   ],
   controllers: [],
   providers: [],
