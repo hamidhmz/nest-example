@@ -6,19 +6,23 @@ import { User } from './user.entity';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
-  async signUp(authCredentialsDto: AuthCredentialsDto): Promise<User> {
+  async signUp(
+    authCredentialsDto: AuthCredentialsDto,
+  ): Promise<{ username: string; id: number }> {
     const user = new User();
     user.username = authCredentialsDto.username;
     const { hash } = await this.hashPassword(authCredentialsDto.password, 10);
 
     user.password = hash;
-    return user.save().catch(error => {
+    await user.save().catch(error => {
       if (error.code === '23505') {
         throw new ConflictException('Username already exists.');
       }
       // throw new InternalServerErrorException();
       throw error;
     });
+
+    return { username: user.username, id: user.id };
   }
 
   public async validateUserPassword(

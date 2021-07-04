@@ -10,6 +10,7 @@ export default function(configService: ConfigService): TypeOrmModuleOptions {
     password: configService.get('POSTGRES_PASSWORD'),
     database: configService.get('POSTGRES_DATABASE'),
     entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+    schema : configService.get('POSTGRES_SCHEMA'),
     synchronize: true,
   };
 }

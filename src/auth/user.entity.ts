@@ -1,4 +1,4 @@
-import { Task } from 'src/tasks/task.entity';
+import { Task } from '../tasks/task.entity';
 import {
   BaseEntity,
   Column,
@@ -18,7 +18,7 @@ export class User extends BaseEntity {
   username: string;
 
   @Column()
-  password: string;
+  password?: string;
 
   @OneToMany(
     type => Task,

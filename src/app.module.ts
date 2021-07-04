@@ -16,6 +16,7 @@ import { validate } from './config/env.validation';
     TasksModule,
     AuthModule,
     ConfigModule.forRoot({
+      envFilePath: process.env.NODE_ENV === 'test' ? 'test/test.env' : '.env',
       validate,
     }),
   ],
